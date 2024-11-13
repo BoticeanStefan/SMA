@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
+ 
 void main() {
   runApp(CurrencyConverterApp());
 }
-
+ 
 class CurrencyConverterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,12 @@ class CurrencyConverterApp extends StatelessWidget {
     );
   }
 }
-
+ 
 // Login Screen
 class LoginScreen extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
+ 
 // Conversion Type Selection Screen
 class ConversionTypeScreen extends StatelessWidget {
   @override
@@ -113,20 +113,20 @@ class ConversionTypeScreen extends StatelessWidget {
     );
   }
 }
-
+ 
 // Fiat Conversion Screen
 class FiatConversionScreen extends StatefulWidget {
   @override
   _FiatConversionScreenState createState() => _FiatConversionScreenState();
 }
-
+ 
 class _FiatConversionScreenState extends State<FiatConversionScreen> {
   String _fromCurrency = 'SGD';
   String _toCurrency = 'USD';
   double _amount = 1000.0;
   double _convertedAmount = 736.70;
   double _exchangeRate = 0.7367;
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,7 +154,13 @@ class _FiatConversionScreenState extends State<FiatConversionScreen> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 24),
-            //Implement CurrencyCard
+            CurrencyCard(
+              currency: _fromCurrency,
+              amount: _amount,
+              onCurrencyChanged: (value) => setState(() => _fromCurrency = value),
+              onAmountChanged: (value) =>
+                  setState(() => _amount = double.parse(value)),
+            ),
             SizedBox(height: 8),
             IconButton(
               icon: Icon(Icons.swap_vert, color: Colors.blueAccent),
@@ -168,7 +174,13 @@ class _FiatConversionScreenState extends State<FiatConversionScreen> {
                 });
               },
             ),
-            //Implement CurrencyCard
+            CurrencyCard(
+              currency: _toCurrency,
+              amount: _convertedAmount,
+              isReadOnly: true,
+              onCurrencyChanged: (value) => setState(() => _toCurrency = value),
+              onAmountChanged: (_) {}, // Dummy function for read-only card
+            ),
             SizedBox(height: 16),
             Text(
               'Indicative Exchange Rate',
@@ -189,7 +201,7 @@ class _FiatConversionScreenState extends State<FiatConversionScreen> {
     );
   }
 }
-
+ 
 // Cryptocurrency Conversion Screen (placeholder)
 class CryptocurrencyConversionScreen extends StatelessWidget {
   @override
@@ -210,6 +222,69 @@ class CryptocurrencyConversionScreen extends StatelessWidget {
     );
   }
 }
-
+ 
 // CurrencyCard widget
-
+class CurrencyCard extends StatelessWidget {
+  final String currency;
+  final double amount;
+  final bool isReadOnly;
+  final Function(String) onCurrencyChanged;
+  final Function(String) onAmountChanged;
+ 
+  CurrencyCard({
+    required this.currency,
+    required this.amount,
+    this.isReadOnly = false,
+    required this.onCurrencyChanged,
+    required this.onAmountChanged,
+  });
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          DropdownButton<String>(
+            value: currency,
+            items: <String>['SGD', 'USD', 'EUR', 'JPY']
+                .map((String value) => DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            ))
+                .toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                onCurrencyChanged(newValue);
+              }
+            },
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: TextFormField(
+              initialValue: amount.toStringAsFixed(2),
+              readOnly: isReadOnly,
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (!isReadOnly && value.isNotEmpty) {
+                  onAmountChanged(value);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
