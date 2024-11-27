@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
+import 'entities/object_box.dart';
+import 'entities/user.dart';
+// created by flutter pub run build_runner build
 
-void main() {
+late ObjectBox objectbox;
+
+Future<void> main() async {
+  // This is required so ObjectBox can get the application directory
+  // to store the database in.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  objectbox = await ObjectBox.create();
+
   runApp(CurrencyConverterApp());
 }
 
 class CurrencyConverterApp extends StatelessWidget {
+  const CurrencyConverterApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,6 +35,8 @@ class CurrencyConverterApp extends StatelessWidget {
 class LoginScreen extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +71,8 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
+                // final user = User('Tina');
+                // userBox.put(user);
                 // Navigate to Conversion Type Screen
                 Navigator.push(
                   context,
@@ -73,6 +90,8 @@ class LoginScreen extends StatelessWidget {
 
 // Conversion Type Selection Screen
 class ConversionTypeScreen extends StatelessWidget {
+  const ConversionTypeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +135,8 @@ class ConversionTypeScreen extends StatelessWidget {
 
 // Fiat Conversion Screen
 class FiatConversionScreen extends StatefulWidget {
+  const FiatConversionScreen({super.key});
+
   @override
   _FiatConversionScreenState createState() => _FiatConversionScreenState();
 }
@@ -204,6 +225,8 @@ class _FiatConversionScreenState extends State<FiatConversionScreen> {
 
 // Cryptocurrency Conversion Screen (placeholder)
 class CryptocurrencyConversionScreen extends StatelessWidget {
+  const CryptocurrencyConversionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,7 +254,7 @@ class CurrencyCard extends StatelessWidget {
   final Function(String) onCurrencyChanged;
   final Function(String) onAmountChanged;
 
-  CurrencyCard({
+  CurrencyCard({super.key,
     required this.currency,
     required this.amount,
     this.isReadOnly = false,
